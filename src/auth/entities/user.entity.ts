@@ -12,6 +12,7 @@ export class User extends Document {
 
     @Prop({
         index:true,
+        select: false,
     })
     password: string;
     

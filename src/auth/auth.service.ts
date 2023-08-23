@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
@@ -14,12 +15,28 @@ export class AuthService {
   ) {}
 
   async create(createAuthDto: CreateAuthDto) {
-    
-    //Missing TryCatch block
+    try {
+      const { email, password, fullname, isActive, rol  } = createAuthDto;
+      const newUser = { email, fullname, isActive, rol }
+      // const user = await this.userModel.create( createAuthDto );
+      const user = await this.userModel.create( 
+        { 
+          ...newUser, 
+          password: bcrypt.hashSync( password, 10 )
+        }
+      );
+      
+      const userCreated = user.toObject();
+      delete userCreated.password;
+      return userCreated;
 
-    const user = await this.userModel.create( createAuthDto );
-
-    return user;
+    } catch (error: any) {
+        if( error.code === 11000 ) {
+          throw new BadRequestException(`User already exists in db ${JSON.stringify( error.keyValue )}`);
+        }
+        console.log(error);
+        throw new InternalServerErrorException(`Can't create the user - check the server logs`);
+    }
   }
 
   findAll() {
