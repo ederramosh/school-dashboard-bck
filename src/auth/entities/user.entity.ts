@@ -19,7 +19,7 @@ export class User extends Document {
     @Prop({
         index:true,
     })
-    fullName: string;
+    fullname: string;
     
     @Prop({
         index:true,
