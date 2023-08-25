@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LoginUserDto } from './dto/login-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,6 +11,11 @@ export class AuthController {
   @Post()
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
+  }
+
+  @Get('login')
+  login(@Body() LoginUserDto: LoginUserDto) {
+    return this.authService.login(LoginUserDto);
   }
 
   @Get()
