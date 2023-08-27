@@ -29,7 +29,7 @@ export class User extends Document {
     @Prop({
         index:true,
     })
-    rol: string;
+    rol: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass( User );

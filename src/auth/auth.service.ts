@@ -33,7 +33,7 @@ export class AuthService {
       const userCreated = user.toObject();
       delete userCreated.password;
       return {
-        token: this.getJwtToken( { email: user.email} ),
+        token: this.getJwtToken( { email: user.email } ),
         userCreated
       };
 
@@ -53,10 +53,13 @@ export class AuthService {
 
     if( !user || !bcrypt.compareSync( password, user.password ))
       throw new UnauthorizedException( 'Invalid credentials' );
+
+      const userRequested = user.toObject();
+      delete userRequested.password;
     
       return {
-        token: this.getJwtToken( { email: user.email} ),
-        user
+        token: this.getJwtToken( { email: user.email } ),
+        userRequested
       };
   }
 

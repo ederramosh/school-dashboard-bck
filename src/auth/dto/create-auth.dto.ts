@@ -22,6 +22,6 @@ export class CreateAuthDto {
     isActive: boolean;
     
     @IsString()
-    rol: string;
+    rol: string[];
 
 }
