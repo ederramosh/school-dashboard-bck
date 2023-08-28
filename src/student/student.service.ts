@@ -22,10 +22,13 @@ export class StudentService {
     }
   }
 
+  //We will get just the active students
   async findAll() {
     const students = await this.studentModel.find();
     return students;
   }
+
+  //We will create the a method where we will get just inactive students
 
   async findOne(id: string) {
     const student = await this.studentModel.findOne({ student_id: id});
@@ -46,6 +49,7 @@ export class StudentService {
 
   }
 
+  //Instead of delete, we will change the active status to false
   async remove(id: string) {
     const { deletedCount } = await this.studentModel.deleteOne( { student_id: id } );
 
