@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
@@ -22,22 +22,38 @@ export class TeacherService {
     }
   }
 
-  //we need to create a login
-
-  findAll() {
-    return `This action returns all teacher`;
+  async findAll() {
+    const teachers = await this.teacherModel.find();
+    if( !teachers ) throw new NotFoundException(`There are not any teacher`);
+    return teachers;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} teacher`;
+  async findOne(id: string) {
+    const teacher = await this.teacherModel.findOne({ teacher_id: id });
+
+    if( !teacher ) throw new NotFoundException(`Teacher with id ${id} not founded`);
+    return teacher;
   }
 
-  update(id: number, updateTeacherDto: UpdateTeacherDto) {
-    return `This action updates a #${id} teacher`;
+  async update(id: string, updateTeacherDto: UpdateTeacherDto) {
+    const teacher = await this.findOne( id );
+    try {
+      await teacher.updateOne( updateTeacherDto );
+      return { ...teacher.toJSON(), ...updateTeacherDto };
+    } catch (error: any) {
+      this.handleExceptions(error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} teacher`;
+  async remove(id: string) {
+    const { deletedCount } = await this.teacherModel.deleteOne( { teacher_id: id } )
+    if( deletedCount === 0 ) {
+      throw new BadRequestException(`Teacher with id ${id} not founded`);
+    }
+    return {
+      status: "ok",
+      messae: "Removed succefully"
+    };
   }
 
   private handleExceptions(error: any) {

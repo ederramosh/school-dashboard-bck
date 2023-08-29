@@ -1,4 +1,14 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTeacherDto } from './create-teacher.dto';
+import { IsBoolean, IsEmail, IsString, MinLength } from "class-validator";
+export class UpdateTeacherDto {
 
-export class UpdateTeacherDto extends PartialType(CreateTeacherDto) {}
+    @IsString()
+    @MinLength(5)
+    name?: string;
+
+    @IsEmail()
+    teacher_email?: string;
+
+    @IsBoolean()
+    active?: boolean;
+
+}

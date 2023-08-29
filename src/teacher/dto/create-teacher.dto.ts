@@ -11,7 +11,7 @@ export class CreateTeacherDto {
     name: string;
 
     @IsEmail()
-    teacher_email;
+    teacher_email: string;
 
     @IsBoolean()
     active: boolean;
